@@ -17,3 +17,11 @@ out center;
 ```
 
 A partir de la consulta, se ha obtenido el fichero `export.geojson`.
+
+Posteriormente, se ha filtrado el fichero mediante un script de python para dejar únicamente los datos relevantes para el trabajo:
+- Identificador, latitud, longitud y tipo de cada punto obtenido
+- Latitud y longitud mínimas y máximas
+
+El script no se incluye en la entrega.
+
+Se ha usado inteligencia artificial para la consulta de obtención de los datos y para el script de filtrado.
