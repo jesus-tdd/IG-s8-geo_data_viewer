@@ -20,9 +20,14 @@ let min_lon = data.limites.lon_min;
 let max_lon = data.limites.lon_max;
 
 let MAX_HEIGHT = 1.5;
-let MAX_COLOR = new THREE.Color(0xffe066);
-let MIN_COLOR = new THREE.Color(0xd62828);
 
+const COLOR_PALETTE = [
+    [0.0,  new THREE.Color("#0b0b3b")],
+    [0.3,  new THREE.Color("#4a1fb8")],
+    [0.55, new THREE.Color("#ff2e93")],
+    [0.8,  new THREE.Color("#ff9f1c")],
+    [1.0,  new THREE.Color("#ffe600")],
+];
 
 init();
 animate();
@@ -120,7 +125,7 @@ function createGrid(cols) {
             dummy.updateMatrix();
 
             bars.setMatrixAt(k, dummy.matrix);
-            bars.setColorAt(k, color.lerpColors(MAX_COLOR, MIN_COLOR, t));
+            bars.setColorAt(k, colorHeatmap(t, color));
 
             k++;
         }
@@ -150,6 +155,20 @@ function countChurches(rows, cols, cell_w, cell_h) {
     }
 
     return count;
+}
+
+const tmp_c = new THREE.Color();
+function colorHeatmap(t, out = tmp_c) {
+    t = Math.min(1, Math.max(0, t));
+
+    for (let k = 1; k < COLOR_PALETTE.length; k++) {
+        const [t1, c1] = COLOR_PALETTE[k];
+        if (t <= t1) {
+            const [t0, c0] = COLOR_PALETTE[k-1];
+            return out.copy(c0).lerp(c1, (t - t0)/(t1 - t0));
+        }
+    }
+    return out.copy(COLOR_PALETTE.at(-1)[1]);
 }
 
 function addLights() {
