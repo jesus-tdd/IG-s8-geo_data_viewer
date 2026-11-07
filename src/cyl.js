@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import * as dat from "dat.gui";
 
 import data from "./iglesias.json"
 import map_tx from "./mapa_cyl.png"
@@ -28,6 +29,14 @@ const COLOR_PALETTE = [
     [0.8,  new THREE.Color("#ff9f1c")],
     [1.0,  new THREE.Color("#ffe600")],
 ];
+
+const settings = {
+    "cols": 60
+}
+let lastCols = settings.cols;
+
+
+let bars;
 
 init();
 animate();
@@ -61,8 +70,9 @@ function init() {
             map.material.map = texture;
             map.material.needsUpdate = true;
             
-            createGrid(60);
+            createGrid(settings.cols);
             addLights();
+            var gui = createGui();
         }
     );
 }
@@ -72,6 +82,10 @@ function animate() {
     requestAnimationFrame(animate);
     cam_controls.update();
     renderer.render(scene, camera);
+
+    if (settings.cols != lastCols) {
+        createGrid(settings.cols);
+    }
 }
 
 
@@ -92,6 +106,8 @@ function geoToScene(lat, lon) {
 
 
 function createGrid(cols) {
+    clearGrid();
+
     const rows = Math.round(cols * map_h / map_w);
     const cell_w = map_w / cols;
     const cell_h = map_h / rows;
@@ -102,7 +118,7 @@ function createGrid(cols) {
 
     const geometry = new THREE.BoxGeometry(cell_w * 0.9, cell_h * 0.9);
     const material = new THREE.MeshLambertMaterial();
-    const bars = new THREE.InstancedMesh(geometry, material, not_zeros);
+    bars = new THREE.InstancedMesh(geometry, material, not_zeros);
     const color = new THREE.Color();
 
     const dummy = new THREE.Object3D();
@@ -134,9 +150,7 @@ function createGrid(cols) {
     bars.instanceMatrix.needsUpdate = true;
     bars.instanceColor.needsUpdate = true;
 
-    objects.push(bars);
     scene.add(bars);
-
 }
 
 
@@ -171,10 +185,26 @@ function colorHeatmap(t, out = tmp_c) {
     return out.copy(COLOR_PALETTE.at(-1)[1]);
 }
 
+function clearGrid() {
+    if (!bars) return;
+
+    scene.remove(bars);
+    bars.geometry.dispose();
+    bars.material.dispose();
+    bars.dispose();
+    bars = null;
+}
+
 function addLights() {
     scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 
     const sun = new THREE.DirectionalLight(0xffffff, 1.2);
     sun.position.set(-3, -4, 6);
     scene.add(sun);
+}
+
+function createGui() {
+    const gui =  new dat.GUI();
+    gui.add(settings, "cols", 1, 100, 1);
+
 }
