@@ -1,7 +1,8 @@
 # Densidad de Iglesias en Castilla y León (IG semana 8)
 
 ## Datos fuente
-Los datos se han obtenido de 
+#### Iglesias
+Las posiciones de las iglesias se han obtenido de 
 [overpass turbo](https://overpass-turbo.eu/).
 Se ha realizado la siguiente consulta:
 

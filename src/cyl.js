@@ -2,9 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import * as dat from "dat.gui";
 
-import data from "./iglesias.json"
-import map_tx from "./mapa_cyl.png"
-
+import data from "./iglesias.json";
+import map_tx from "./mapa_cyl.png";
 
 let scene, renderer, camera, cam_controls;
 
@@ -116,9 +115,10 @@ function createGrid(cols) {
     const not_zeros = church_count.filter(c => c > 0).length;
     const max = Math.max(...church_count);
 
-    const geometry = new THREE.BoxGeometry(cell_w * 0.9, cell_h * 0.9);
+    const geometry = new THREE.BoxGeometry(cell_w*0.9, cell_h*0.9);
     const material = new THREE.MeshLambertMaterial();
     bars = new THREE.InstancedMesh(geometry, material, not_zeros);
+    // bars = new THREE.InstancedMesh(geometry, material, church_count.length);
     const color = new THREE.Color();
 
     const dummy = new THREE.Object3D();
