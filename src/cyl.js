@@ -29,6 +29,22 @@ const COLOR_PALETTE = [
     [1.0,  new THREE.Color("#ffe600")],
 ];
 
+const FILTERS = {
+    "church": c => c.tipo == "iglesia",
+    "monastery": c => c.tipo == "monasterio",
+    "cathedral": c => c.tipo == "catedral",
+    "chapel": c => c.tipo == "ermita_capilla",
+    "other": c => c.tipo == "otros"
+}
+
+const filter_statuses = {
+    "church": true,
+    "monastery": true,
+    "cathedral": true,
+    "chapel": true,
+    "other": true
+}
+
 const settings = {
     "cols": 60
 }
@@ -81,10 +97,6 @@ function animate() {
     requestAnimationFrame(animate);
     cam_controls.update();
     renderer.render(scene, camera);
-
-    if (settings.cols != lastCols) {
-        createGrid(settings.cols);
-    }
 }
 
 
@@ -157,7 +169,13 @@ function createGrid(cols) {
 function countChurches(rows, cols, cell_w, cell_h) {
     const count = new Array(cols * rows).fill(0);
     
-    for (const c of data.puntos) {
+    const points = data.puntos.filter((p) =>
+        Object.entries(filter_statuses).some(
+            ([key, active]) => active && FILTERS[key](p)
+        )
+    );
+    
+    for (const c of points) {
         const {x, y} = geoToScene(c.lat, c.lon);
 
         const i = Math.min(cols - 1, Math.floor((x + map_w / 2) / cell_w));
@@ -205,6 +223,12 @@ function addLights() {
 
 function createGui() {
     const gui =  new dat.GUI();
-    gui.add(settings, "cols", 1, 100, 1);
-
+    gui.add(settings, "cols", 1, 100, 1).onChange(() => createGrid(settings.cols));
+    
+    const filter_folder = gui.addFolder("Filters");
+    filter_folder.add(filter_statuses, "cathedral").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "church").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "chapel").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "monastery").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "other").onChange(() => createGrid(settings.cols));
 }
