@@ -52,3 +52,40 @@ html, body {
     position: absolute;
     transform: translateY(50%);
 }
+
+/* dat.GUI: fuente monoespaciada */
+.dg.ac .dg.main,
+.dg.ac .dg.main * {
+    font-family: monospace !important;
+    font-weight: bold;
+}
+
+/* dat.GUI: colores del slider */
+.dg.ac .dg.main .c .slider {
+    background: #0b0b3b;
+}
+
+.dg.ac .dg.main .c .slider:hover {
+    background: #14145a;
+}
+
+.dg.ac .dg.main .c .slider-fg {
+    background: linear-gradient(90deg, #4a1fb8, #ff2e93);
+}
+
+.dg.ac .dg.main .c .slider:hover .slider-fg {
+    background: linear-gradient(90deg, #ff2e93, #ff9f1c);
+}
+
+.dg.ac .dg.main .cr.number { border-left-color: #ff2e93; }
+.dg.ac .dg.main .c input[type=text] { color: #ff2e93; }
+
+/* dat.GUI: colores de los checkbox */
+.dg.ac .dg.main .c input[type=checkbox] {
+    accent-color: #ff2e93;
+    cursor: pointer;
+}
+
+.dg.ac .dg.main .cr.boolean {
+    border-left-color: #ff9f1c;
+}

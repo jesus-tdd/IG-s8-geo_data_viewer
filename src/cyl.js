@@ -229,16 +229,18 @@ function addLights() {
 
 function createGui() {
     const gui =  new dat.GUI();
-    gui.add(settings, "cols", 1, 100, 1).onChange(() => createGrid(settings.cols));
+    gui.add(settings, "cols", 1, 100, 1)
+        .name("Columns")
+        .onChange(() => createGrid(settings.cols));
     
     const filter_folder = gui.addFolder("Filters");
-    filter_folder.add(filter_statuses, "cathedral").onChange(() => createGrid(settings.cols));
-    filter_folder.add(filter_statuses, "church").onChange(() => createGrid(settings.cols));
-    filter_folder.add(filter_statuses, "chapel").onChange(() => createGrid(settings.cols));
-    filter_folder.add(filter_statuses, "monastery").onChange(() => createGrid(settings.cols));
-    filter_folder.add(filter_statuses, "other").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "cathedral").name("Cathedral").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "church").name("Church").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "chapel").name("Chapel").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "monastery").name("Monastery").onChange(() => createGrid(settings.cols));
+    filter_folder.add(filter_statuses, "other").name("Other").onChange(() => createGrid(settings.cols));
 }
-
+    
 function setTitle() {
     title = document.createElement("div");
     title.id = "title";
