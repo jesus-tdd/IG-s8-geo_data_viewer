@@ -7,12 +7,13 @@ import map_tx from "./mapa_cyl.png";
 
 let scene, renderer, camera, cam_controls;
 
+let title, legend_ticks=[];
+const LEGEND_STEPS = [0, 0.25, 0.5, 0.75, 1];
+
 let map, 
     map_w,
     map_h,
     scale = 5;
-
-let objects = [];
 
 let min_lat = data.limites.lat_min;
 let max_lat = data.limites.lat_max;
@@ -48,8 +49,6 @@ const filter_statuses = {
 const settings = {
     "cols": 60
 }
-let lastCols = settings.cols;
-
 
 let bars;
 
@@ -57,6 +56,9 @@ init();
 animate();
 
 function init() {
+    setTitle();
+    createLegend();
+
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(
         75,
@@ -126,6 +128,10 @@ function createGrid(cols) {
     const church_count = countChurches(rows, cols, cell_w, cell_h);
     const not_zeros = church_count.filter(c => c > 0).length;
     const max = Math.max(...church_count);
+    
+    updateLegend(max);
+    
+    if (max === 0) return;
 
     const geometry = new THREE.BoxGeometry(cell_w*0.9, cell_h*0.9);
     const material = new THREE.MeshLambertMaterial();
@@ -231,4 +237,61 @@ function createGui() {
     filter_folder.add(filter_statuses, "chapel").onChange(() => createGrid(settings.cols));
     filter_folder.add(filter_statuses, "monastery").onChange(() => createGrid(settings.cols));
     filter_folder.add(filter_statuses, "other").onChange(() => createGrid(settings.cols));
+}
+
+function setTitle() {
+    title = document.createElement("div");
+    title.id = "title";
+    title.innerHTML = "Church density in Castile and León";
+    document.body.appendChild(title);
+}
+
+function createLegend() {
+    const legend = document.createElement("div");
+    legend.id = "legend";
+
+    const legend_title = document.createElement("div");
+    legend_title.id = "legend-title";
+    legend_title.innerHTML = "Churches per cell";
+    legend.appendChild(legend_title);
+
+
+    const stops = COLOR_PALETTE
+        .map(([t, c]) => `${c.getStyle()} ${t * 100}%`)
+        .join(", ");
+    const bar = document.createElement("div");
+    bar.id = "legend-bar";
+    bar.style.background = `linear-gradient(to top, ${stops})`;
+    legend.appendChild(bar);
+
+
+    const ticks = document.createElement("div");
+    ticks.id = "legend-ticks";
+    for (const t of LEGEND_STEPS) {
+        const span = document.createElement("span");
+        span.style.bottom = `${t * 100}%`;
+        ticks.appendChild(span);
+        legend_ticks.push(span);
+    }
+    legend.appendChild(ticks);
+
+
+    document.body.appendChild(legend);
+}
+
+function updateLegend(max) {
+    let prev = null;
+    LEGEND_STEPS.forEach((t, idx) => {
+
+        const value = Math.round(t * t * max);
+        const span = legend_ticks[idx];
+
+        if (value === prev || max === 0) {
+            span.style.display = "none";
+        } else {
+            span.style.display = "block";
+            span.textContent = idx === LEGEND_STEPS.length - 1 ? value : value;
+        }
+        prev = value;
+    });
 }
