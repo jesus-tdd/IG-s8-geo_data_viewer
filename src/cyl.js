@@ -89,7 +89,7 @@ function init() {
             
             createGrid(settings.cols);
             addLights();
-            var gui = createGui();
+            createGui();
         }
     );
 }
