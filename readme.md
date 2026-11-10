@@ -7,7 +7,7 @@
 - [Uso de IA](#uso-de-ia)
 
 ## Demo
-![Demo](./demo_edited.mp4)
+![Demo](./s8_edited.mp4)
 
 ## Trabajo Realizado
 - Generación de un mapa de la densidad de centros religiosos católicos en la provincia de Castilla y León.
